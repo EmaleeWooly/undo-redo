@@ -1,13 +1,41 @@
-# Import the Node class you created in node.py
 from node import Node
 
-# Implement your Stack class here
 class Stack:
-    pass # delete this line
+    def __init__(self):
+        self.top = None
+
+    def is_empty(self):
+        return self.top is None
+
+    def push(self, data):
+        new_node = Node(data)
+        new_node.next = self.top
+        self.top = new_node
+
+    def pop(self):
+        if self.is_empty():
+            return None
+        removed_data = self.top.data
+        self.top = self.top.next
+        return removed_data
+
+    def peek(self):
+        if self.is_empty():
+            return None
+        return self.top.data
+
+    def display(self):
+        actions = []
+        current = self.top
+        while current:
+            actions.append(current.data)
+            current = current.next
+        return actions
+
 
 def run_undo_redo():
-    # Create instances of the Stack class for undo and redo
-    
+    undo_stack = Stack()
+    redo_stack = Stack()
 
     while True:
         print("\n--- Undo/Redo Manager ---")
@@ -21,32 +49,44 @@ def run_undo_redo():
 
         if choice == "1":
             action = input("Describe the action (e.g., Insert 'a'): ")
-            # Push the action onto the undo stack and clear the redo stack
-
-
+            undo_stack.push(action)
+            redo_stack = Stack()  # clear redo stack
             print(f"Action performed: {action}")
+
         elif choice == "2":
-            # Pop an action from the undo stack and push it onto the redo stack
-            pass # delete this line
-            
+            action = undo_stack.pop()
+            if action:
+                redo_stack.push(action)
+                print(f"Undid action: {action}")
+            else:
+                print("Nothing to undo.")
 
         elif choice == "3":
-            # Pop an action from the redo stack and push it onto the undo stack
-            pass # delete this line
-
+            action = redo_stack.pop()
+            if action:
+                undo_stack.push(action)
+                print(f"Redid action: {action}")
+            else:
+                print("Nothing to redo.")
 
         elif choice == "4":
-            # Print the undo stack
-            print("\nUndo Stack:")
-            
-            
+            print("Undo Stack:")
+            actions = undo_stack.display()
+            if actions:
+                for act in actions:
+                    print(f"- {act}")
+            else:
+                print("(empty)")
 
         elif choice == "5":
-            # Print the redo stack
-            print("\nRedo Stack:")
-            
-            
-            
+            print("Redo Stack:")
+            actions = redo_stack.display()
+            if actions:
+                for act in actions:
+                    print(f"- {act}")
+            else:
+                print("(empty)")
+
         elif choice == "6":
             print("Exiting Undo/Redo Manager.")
             break
